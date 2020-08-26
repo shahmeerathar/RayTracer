@@ -1,5 +1,6 @@
 #include "vec3.h"
 #include "ray.h"
+#include "sphere.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -53,7 +54,8 @@ int main()
                 double u = static_cast<double>(j) / static_cast<double>(img_width);
                 double v = static_cast<double>(i) / static_cast<double>(img_height);
                 ray r = ray(origin, lower_left_corner + u*horizontal + v*vertical);
-                pixels[index] = r.colour_ray();
+                sphere s = sphere(point3(0.0, 0.0, -0.5), 0.4);
+                pixels[index] = r.colour_ray(s);
                 cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
