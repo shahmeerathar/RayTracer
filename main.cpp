@@ -1,6 +1,6 @@
-#include "vec3.h"
-#include "ray.h"
+#include "commons.h"
 #include "sphere.h"
+#include "hittable_list.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -56,6 +56,10 @@ int main()
 
     colour pixels[img_width * img_height];
 
+    hittable_list objects = hittable_list();
+    objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5));
+    objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100));
+
     int index = 0;
     for (int i = img_height; i > 0; i--)
         {
@@ -64,8 +68,7 @@ int main()
                 double u = static_cast<double>(j) / static_cast<double>(img_width);
                 double v = static_cast<double>(i) / static_cast<double>(img_height);
                 ray r = ray(origin, lower_left_corner + u*horizontal + v*vertical);
-                sphere s = sphere(point3(0.0, 0.0, -2), 1);
-                pixels[index] = colour_ray(r, s);
+                pixels[index] = colour_ray(r, objects);
                 cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
