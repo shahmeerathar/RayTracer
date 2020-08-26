@@ -1,6 +1,4 @@
 #include "sphere.h"
-#include "ray.h"
-#include "vec3.h"
 #include <cmath>
 
 sphere::sphere(point3 cen, double r)

@@ -27,6 +27,16 @@ void write_ppm(colour pixels[], int width, int height)
     }
 }
 
+colour colour_ray(const ray& r, const hittable& object)
+{
+	hit_record record;
+	if (object.hit(r, 0, 1000, record))
+	{
+		return colour(1.0, 0.0, 0.0);
+	}
+    return colour(1.0, 1.0, 1.0);
+}
+
 int main()
 {
     //Defining image properties
@@ -54,8 +64,8 @@ int main()
                 double u = static_cast<double>(j) / static_cast<double>(img_width);
                 double v = static_cast<double>(i) / static_cast<double>(img_height);
                 ray r = ray(origin, lower_left_corner + u*horizontal + v*vertical);
-                sphere s = sphere(point3(0.0, 0.0, -0.5), 0.4);
-                pixels[index] = r.colour_ray(s);
+                sphere s = sphere(point3(0.0, 0.0, -2), 1);
+                pixels[index] = colour_ray(r, s);
                 cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
