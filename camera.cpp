@@ -1,12 +1,13 @@
 #include "camera.h"
 #include <iostream>
 
-camera::camera(double w, double aspect_ratio, double length, int samples)
+camera::camera(double deg, double aspect, double focal)
 {
-    width = w;
-    height = width / aspect_ratio;
-    focal_length = length;
-    samples_per_pixel = samples;
+    angle = deg;
+    aspect_ratio = aspect;
+    height = 2.0 * tan(deg_to_rad(angle)/2);;
+    width = height * aspect_ratio;
+    focal_length = focal;
 
     origin = point3(0.0, 0.0, 0.0);
     horizontal = vec3(width, 0.0, 0.0);

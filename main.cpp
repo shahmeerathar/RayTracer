@@ -57,15 +57,16 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
 int main()
 {
     //Defining image properties and camera
-    double aspect_ratio = 1.0/1.0;
+    double aspect_ratio = 16.0/9.0;
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
-    double focal_length = 1;
-    int samples_per_pixel = 100;
-    camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
+    double focal_length = 1.0;
+    int samples_per_pixel = 10;
+    camera cam(120, aspect_ratio, focal_length);
 
     colour pixels[img_width * img_height];
 
+    //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
     shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
@@ -79,6 +80,7 @@ int main()
     objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
     objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
 
+    //Iterating through pixels
     int index = 0;
     for (int i = img_height; i > 0; i--)
         {
