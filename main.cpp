@@ -38,11 +38,17 @@ int main()
 {
     //Defining image properties and camera
     double aspect_ratio = 16.0/9.0;
-    int img_width  = 2048;
+    int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
-    double focal_length = 1.0;
-    int samples_per_pixel = 10;
-    camera cam(point3(-2,2,1), point3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
+    int samples_per_pixel = 100;
+
+    point3 lookfrom = point3(2,1,1);
+    point3 lookat = point3(0,0,-1);
+    point3 vup = vec3(-0.25,1.25,0);
+    double fov_angle = 20.0;
+    double aperture = 6.0;
+    double focus_distance = (lookfrom - lookat).length();
+    camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance);
 
     //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));

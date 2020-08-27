@@ -71,3 +71,11 @@ inline double schlick(double index, double cosine)
     f_0 = f_0 * f_0;
     return f_0 + ((1-f_0)*pow(1-cosine, 5));
 }
+
+inline vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (p.length_squared() >= 1) continue;
+        return p;
+    }
+}
