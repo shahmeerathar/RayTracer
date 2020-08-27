@@ -61,22 +61,23 @@ int main()
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     double focal_length = 1;
-    int samples_per_pixel = 1000;
+    int samples_per_pixel = 100;
     camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
 
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
-    shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8));
-    shared_ptr<material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2));
+    shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
+    shared_ptr<material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.2);
+    shared_ptr<material> material_5 = make_shared<dielectric>(1.5);
 
     hittable_list objects = hittable_list();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
     objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
     objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
-    objects.add(make_shared<sphere>(point3(0.0, 0.25, -0.6), 0.1, material_1));
+    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
 
     int index = 0;
     for (int i = img_height; i > 0; i--)

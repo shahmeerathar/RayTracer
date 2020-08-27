@@ -57,3 +57,17 @@ inline vec3 reflect(const vec3& v, const vec3& n)
 {
     return unit(v - 2*dot(v,n)*n);
 }
+
+inline vec3 refract(const vec3& in_ray, const vec3& normal, double& index_ratio)
+{
+    vec3 r_perp = index_ratio * (in_ray + (dot(-unit(in_ray), unit(normal)) * normal));
+    vec3 r_parr = -sqrt(fabs(1 - r_perp.length_squared())) * normal;
+    return r_perp + r_parr;
+}
+
+inline double schlick(double index, double cosine)
+{
+    double f_0 = (index - 1) / (index + 1);
+    f_0 = f_0 * f_0;
+    return f_0 + ((1-f_0)*pow(1-cosine, 5));
+}
