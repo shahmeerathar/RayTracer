@@ -28,12 +28,19 @@ void write_ppm(colour pixels[], int width, int height)
     }
 }
 
-colour colour_ray(const ray& r, const hittable& object)
+colour colour_ray(const ray& r, const hittable& object, int depth)
 {
 	hit_record record;
-	if (object.hit(r, 0, infinity, record))
+
+    if (depth > 50)
+    {
+        return colour(0.0, 0.0, 0.0);
+    }
+
+	if (object.hit(r, 0.001, infinity, record))
 	{
-		return 0.5 * (record.normal + colour(1.0,1.0,1.0));
+        point3 tangent_sphere_point = record.point + record.normal + random_unit_vector();
+		return 0.5 * (colour_ray(ray(record.point, tangent_sphere_point - record.point), object, depth + 1));
 	}
     vec3 unit_direction = unit(r.direction);
     auto t = 0.5*(unit_direction.y + 1.0);
@@ -47,7 +54,7 @@ int main()
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     double focal_length = 1.0;
-    int samples_per_pixel = 10;
+    int samples_per_pixel = 1000;
     camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
@@ -68,7 +75,7 @@ int main()
                     double u = (static_cast<double>(j) + random_double()) / static_cast<double>(img_width);
                     double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
                     ray r = cam.get_ray(u, v);
-                    pixel += colour_ray(r, objects);
+                    pixel += colour_ray(r, objects, 1);
                 }
                 pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                 pixels[index] = pixel;

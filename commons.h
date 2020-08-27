@@ -44,3 +44,11 @@ inline double clamp(double x, double min, double max)
     }
     return x;
 }
+
+inline vec3 random_unit_vector()
+{
+    double a = random_double(0, 2*pi);
+    double z = random_double(-1, 1);
+    double r = sqrt(1 - z*z);
+    return vec3(r*cos(a), r*sin(a), z);
+}
