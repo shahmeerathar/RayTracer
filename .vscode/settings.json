@@ -6,6 +6,7 @@
         "memory": "cpp",
         "cmath": "cpp",
         "ostream": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "type_traits": "cpp"
     }
 }

@@ -38,20 +38,20 @@ int main()
 {
     //Defining image properties and camera
     double aspect_ratio = 16.0/9.0;
-    int img_width  = 500;
+    int img_width  = 2000;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     int samples_per_pixel = 100;
 
-    point3 lookfrom = point3(0,0,0);
+    point3 lookfrom = point3(3,3,2);
     point3 lookat = point3(0,0,-1);
-    point3 vup = vec3(-0.25,1.25,0);
+    point3 vup = vec3(0,1,0);
     double fov_angle = 20.0;
     double aperture = 2.0;
     double focus_distance = (lookfrom - lookat).length();
-    bool dof = false;
+    bool dof = true;
     camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
-    //Defining objects and materials
+/*     //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
     shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
@@ -63,7 +63,20 @@ int main()
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
     objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
     objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
-    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
+    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5)); */
+
+    hittable_list world;
+
+    auto material_ground = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
+    auto material_center = make_shared<Lambertian>(colour(0.1, 0.2, 0.5));
+    auto material_left = make_shared<Lambertian>(colour(0.5, 0.2, 0.3));
+    auto material_right  = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.0);
+
+    world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0), -0.45, material_left));
+    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
 
     //Iterating through pixels
     int index = 0;
@@ -83,7 +96,7 @@ int main()
                     double u = (static_cast<double>(j) + random_double()) / static_cast<double>(img_width);
                     double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
                     ray r = cam.get_ray(u, v);
-                    pixel += colour_ray(r, objects, 1);
+                    pixel += colour_ray(r, world, 1);
                 }
                 pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                 int red = static_cast<int>(pixel.x * 255);
