@@ -42,13 +42,14 @@ int main()
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     int samples_per_pixel = 100;
 
-    point3 lookfrom = point3(2,1,1);
+    point3 lookfrom = point3(0,0,0);
     point3 lookat = point3(0,0,-1);
     point3 vup = vec3(-0.25,1.25,0);
     double fov_angle = 20.0;
-    double aperture = 6.0;
+    double aperture = 2.0;
     double focus_distance = (lookfrom - lookat).length();
-    camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance);
+    bool dof = false;
+    camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
     //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
