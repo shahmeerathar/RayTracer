@@ -1,4 +1,5 @@
 #include "commons.h"
+#include "camera.h"
 #include "sphere.h"
 #include "hittable_list.h"
 #include <iostream>
@@ -41,20 +42,13 @@ colour colour_ray(const ray& r, const hittable& object)
 
 int main()
 {
-    //Defining image properties
+    //Defining image properties and camera
     double aspect_ratio = 1.0/1.0;
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
-
-    //Defining camera and viewing plane
-    double viewport_width = 2.0;
-    double viewport_height = viewport_width / aspect_ratio;
     double focal_length = 1.0;
-
-    point3 origin = point3(0.0, 0.0, 0.0);
-    vec3 horizontal = vec3(viewport_width, 0.0, 0.0);
-    vec3 vertical = vec3(0.0, viewport_height, 0.0);
-    point3 lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0.0, 0.0, focal_length);
+    int samples_per_pixel = 10;
+    camera cam(img_width, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
 
@@ -70,7 +64,7 @@ int main()
             {
                 double u = static_cast<double>(j) / static_cast<double>(img_width);
                 double v = static_cast<double>(i) / static_cast<double>(img_height);
-                ray r = ray(origin, lower_left_corner + u*horizontal + v*vertical);
+                ray r = cam.get_ray(u, v);
                 pixels[index] = colour_ray(r, objects);
                 cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
                 index++;
