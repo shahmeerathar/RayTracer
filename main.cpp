@@ -53,8 +53,8 @@ int main()
     double aspect_ratio = 1.0/1.0;
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
-    double focal_length = 1.0;
-    int samples_per_pixel = 1000;
+    double focal_length = 1;
+    int samples_per_pixel = 10000;
     camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
@@ -62,7 +62,9 @@ int main()
     hittable_list objects = hittable_list();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5));
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100));
-    objects.add(make_shared<sphere>(point3(0.5, 0.5, -1), 0.1));
+    objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1));
+    objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1));
+    objects.add(make_shared<sphere>(point3(0.0, 0.25, -0.6), 0.1));
 
     int index = 0;
     for (int i = img_height; i > 0; i--)
@@ -79,7 +81,7 @@ int main()
                 }
                 pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                 pixels[index] = pixel;
-                cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
+                cout << "Rendered: " << (index*100)/(img_width*img_height) << '%' << " - remaining pixels: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
         }
