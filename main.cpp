@@ -30,18 +30,20 @@ void write_ppm(colour pixels[], int width, int height)
 colour colour_ray(const ray& r, const hittable& object)
 {
 	hit_record record;
-	if (object.hit(r, 0, 1000, record))
+	if (object.hit(r, 0, infinity, record))
 	{
-		return colour(1.0, 0.0, 0.0);
+		return 0.5 * (record.normal + colour(1.0,1.0,1.0));
 	}
-    return colour(1.0, 1.0, 1.0);
+    vec3 unit_direction = unit(r.direction);
+    auto t = 0.5*(unit_direction.y + 1.0);
+    return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
 }
 
 int main()
 {
     //Defining image properties
-    double aspect_ratio = 1.0 / 1.0;
-    int img_width  = 256;
+    double aspect_ratio = 1.0/1.0;
+    int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
 
     //Defining camera and viewing plane
@@ -59,6 +61,7 @@ int main()
     hittable_list objects = hittable_list();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5));
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100));
+    objects.add(make_shared<sphere>(point3(0.5, 0.5, -1), 0.1));
 
     int index = 0;
     for (int i = img_height; i > 0; i--)

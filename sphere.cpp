@@ -1,5 +1,7 @@
 #include "sphere.h"
 #include <cmath>
+#include <iostream>
+#include <algorithm>
 
 sphere::sphere(point3 cen, double r)
     {
@@ -18,8 +20,8 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
     if (discriminant > 0)
     {
         double root = sqrt(discriminant);
-        double temp_t = (-b + root) / 2*a;
-        if (temp_t >= t_min && temp_t <= t_max)
+        double temp_t = ((-1 * b) + root) / 2*a;
+        if (temp_t > t_min && temp_t < t_max)
         {
             record.t = temp_t;
             record.point = r.at(record.t);
@@ -27,8 +29,8 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
             record.set_face_normal(r, out_normal);
             return true;
         }
-        temp_t = (-b - root) / 2*a;
-        if (temp_t >= t_min && temp_t <= t_max)
+        temp_t = ((-1 * b) - root) / 2*a;
+        if (temp_t > t_min && temp_t < t_max)
         {
             record.t = temp_t;
             record.point = r.at(record.t);

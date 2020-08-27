@@ -1,5 +1,4 @@
 #include "hittable_list.h"
-#include <iostream>
 
 hittable_list::hittable_list()
 {
@@ -24,7 +23,7 @@ bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& re
 
     for (const auto& object : objects)
     {
-        if (object->hit(r, t_min, closest, record))
+        if (object->hit(r, t_min, closest, temp))
         {
             hits_made = true;
             closest = temp.t;
