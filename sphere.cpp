@@ -3,11 +3,12 @@
 #include <iostream>
 #include <algorithm>
 
-sphere::sphere(point3 cen, double r)
-    {
-        centre = cen;
-        radius = r;
-    }
+sphere::sphere(point3 cen, double r, shared_ptr<material> m)
+{
+    centre = cen;
+    radius = r;
+    mtr_ptr = m;
+}
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) const
 {
@@ -27,6 +28,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
             record.point = r.at(record.t);
             vec3 out_normal = unit((record.point - centre) / radius);
             record.set_face_normal(r, out_normal);
+            record.mtr_ptr = mtr_ptr;
             return true;
         }
         temp_t = (-half_b + sqrt(discriminant) ) / a;
@@ -36,6 +38,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
             record.point = r.at(record.t);
             vec3 out_normal = unit((record.point - centre) / radius);
             record.set_face_normal(r, out_normal);
+            record.mtr_ptr = mtr_ptr;
             return true;
         }
     }

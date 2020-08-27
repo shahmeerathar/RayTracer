@@ -1,7 +1,9 @@
 #include "commons.h"
 #include "camera.h"
+#include "hittable.h"
 #include "sphere.h"
 #include "hittable_list.h"
+#include "materials.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -39,8 +41,13 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
 
 	if (object.hit(r, 0.001, infinity, record))
 	{
-        point3 tangent_sphere_point = record.point + record.normal + random_unit_vector();
-		return 0.5 * (colour_ray(ray(record.point, tangent_sphere_point - record.point), object, depth + 1));
+        ray scattered = r;
+        colour attenuation;
+        if (record.mtr_ptr->scatter(r, record, attenuation, scattered))
+        {
+            return attenuation * colour_ray(scattered, object, depth + 1);
+        }
+        return colour(0.0, 0.0, 0.0);
 	}
     vec3 unit_direction = unit(r.direction);
     auto t = 0.5*(unit_direction.y + 1.0);
@@ -54,17 +61,22 @@ int main()
     int img_width  = 500;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     double focal_length = 1;
-    int samples_per_pixel = 10000;
+    int samples_per_pixel = 1000;
     camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
 
+    shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
+    shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
+    shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8));
+    shared_ptr<material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2));
+
     hittable_list objects = hittable_list();
-    objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5));
-    objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100));
-    objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1));
-    objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1));
-    objects.add(make_shared<sphere>(point3(0.0, 0.25, -0.6), 0.1));
+    objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
+    objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
+    objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
+    objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
+    objects.add(make_shared<sphere>(point3(0.0, 0.25, -0.6), 0.1, material_1));
 
     int index = 0;
     for (int i = img_height; i > 0; i--)

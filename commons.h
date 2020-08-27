@@ -52,3 +52,8 @@ inline vec3 random_unit_vector()
     double r = sqrt(1 - z*z);
     return vec3(r*cos(a), r*sin(a), z);
 }
+
+inline vec3 reflect(const vec3& v, const vec3& n)
+{
+    return unit(v - 2*dot(v,n)*n);
+}

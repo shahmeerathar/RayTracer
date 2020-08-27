@@ -5,6 +5,7 @@
         "fstream": "cpp",
         "memory": "cpp",
         "cmath": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "algorithm": "cpp"
     }
 }

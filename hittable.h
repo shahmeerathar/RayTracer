@@ -1,10 +1,13 @@
 #pragma once
 #include "commons.h"
 
+class material;
+
 struct hit_record
 {
     point3 point;
     vec3 normal;
+    shared_ptr<material> mtr_ptr;
     double t;
     bool front_face;
 
