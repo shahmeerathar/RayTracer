@@ -62,10 +62,16 @@ int main()
         {
             for (int j = 0; j < img_width; j++)
             {
-                double u = static_cast<double>(j) / static_cast<double>(img_width);
-                double v = static_cast<double>(i) / static_cast<double>(img_height);
-                ray r = cam.get_ray(u, v);
-                pixels[index] = colour_ray(r, objects);
+                colour pixel = colour(0.0, 0.0, 0.0);
+                for (int s = 0; s < samples_per_pixel; s++)
+                {
+                    double u = (static_cast<double>(j) + random_double()) / static_cast<double>(img_width);
+                    double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
+                    ray r = cam.get_ray(u, v);
+                    pixel += colour_ray(r, objects);
+                }
+                pixel *= (1.0 / static_cast<double>(samples_per_pixel));
+                pixels[index] = pixel;
                 cout << "Remaining: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
