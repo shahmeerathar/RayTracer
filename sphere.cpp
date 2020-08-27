@@ -25,7 +25,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
         {
             record.t = temp_t;
             record.point = r.at(record.t);
-            vec3 out_normal = (record.point - centre) / radius;
+            vec3 out_normal = unit((record.point - centre) / radius);
             record.set_face_normal(r, out_normal);
             return true;
         }
@@ -34,7 +34,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& record) c
         {
             record.t = temp_t;
             record.point = r.at(record.t);
-            vec3 out_normal = (record.point - centre) / radius;
+            vec3 out_normal = unit((record.point - centre) / radius);
             record.set_face_normal(r, out_normal);
             return true;
         }
