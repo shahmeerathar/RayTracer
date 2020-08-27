@@ -10,26 +10,6 @@
 
 using namespace std;
 
-
-void write_ppm(colour pixels[], int width, int height)
-{
-    ofstream image ("image.ppm");
-    if (image.is_open())
-    {
-        int index = 0;
-        image << "P3\n" << width << ' ' << height << "\n255\n";
-        for (int i = 0; i < width * height; i++)
-        {
-            colour pixel = pixels[i];
-            int red = static_cast<int>(pixel.x * 255);
-            int green = static_cast<int>(pixel.y * 255);
-            int blue = static_cast<int>(pixel.z * 255);
-            image << red << ' ' << green << ' ' << blue << '\n';
-        }
-        image.close();
-    }
-}
-
 colour colour_ray(const ray& r, const hittable& object, int depth)
 {
 	hit_record record;
@@ -58,13 +38,11 @@ int main()
 {
     //Defining image properties and camera
     double aspect_ratio = 16.0/9.0;
-    int img_width  = 500;
+    int img_width  = 2048;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     double focal_length = 1.0;
-    int samples_per_pixel = 1000;
+    int samples_per_pixel = 10;
     camera cam(point3(-2,2,1), point3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
-
-    colour pixels[img_width * img_height];
 
     //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
@@ -82,7 +60,13 @@ int main()
 
     //Iterating through pixels
     int index = 0;
-    for (int i = img_height; i > 0; i--)
+
+    ofstream image ("image.ppm");
+    if (image.is_open())
+    {
+        int index = 0;
+        image << "P3\n" << img_width << ' ' << img_height << "\n255\n";
+        for (int i = img_height; i > 0; i--)
         {
             for (int j = 0; j < img_width; j++)
             {
@@ -95,12 +79,15 @@ int main()
                     pixel += colour_ray(r, objects, 1);
                 }
                 pixel *= (1.0 / static_cast<double>(samples_per_pixel));
-                pixels[index] = pixel;
+                int red = static_cast<int>(pixel.x * 255);
+                int green = static_cast<int>(pixel.y * 255);
+                int blue = static_cast<int>(pixel.z * 255);
+                image << red << ' ' << green << ' ' << blue << '\n';
                 cout << "Rendered: " << (index*100)/(img_width*img_height) << '%' << " - remaining pixels: " << img_width*img_height - 1 - index << '\n';
                 index++;
             }
         }
-
-    write_ppm(pixels, img_width, img_height);
+        image.close();
+    }
     return 0;
 }
