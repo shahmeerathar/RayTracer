@@ -1,6 +1,7 @@
 #pragma once
 #include <cmath>
 #include <cstdlib>
+#include <stdlib.h>
 #include <limits>
 #include <memory>
 #include "vec3.h"
@@ -19,4 +20,27 @@ inline double deg_to_rad(double degrees)
 inline double rad_to_deg(double rad)
 {
     return 180.0 * rad/pi;
+}
+
+inline double random_double()
+{
+    return rand() / (RAND_MAX + 1.0);
+}
+
+inline double random_double(double min, double max)
+{
+    return min + (random_double() * (max - min));
+}
+
+inline double clamp(double x, double min, double max)
+{
+    if (x > max)
+    {
+        return max;
+    }
+    if (x < min)
+    {
+        return min;
+    }
+    return x;
 }

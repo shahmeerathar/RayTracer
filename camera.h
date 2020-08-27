@@ -10,9 +10,9 @@ class camera
     double focal_length;
     int samples_per_pixel;
     point3 origin;
-    vec3 horizonal;
+    vec3 horizontal;
     vec3 vertical;
-    point3 lower_left;
+    point3 lower_left_corner;
 
     camera(double w, double aspect, double focal, int samples);
     ray get_ray(double u, double v);

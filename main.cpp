@@ -48,7 +48,7 @@ int main()
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     double focal_length = 1.0;
     int samples_per_pixel = 10;
-    camera cam(img_width, aspect_ratio, focal_length, samples_per_pixel);
+    camera cam(2.0, aspect_ratio, focal_length, samples_per_pixel);
 
     colour pixels[img_width * img_height];
 
