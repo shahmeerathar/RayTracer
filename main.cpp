@@ -4,11 +4,16 @@
 #include "sphere.h"
 #include "hittable_list.h"
 #include "materials.h"
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <thread>
+#include <mutex>
+#include <future>
 
 using namespace std;
+
 
 colour colour_ray(const ray& r, const hittable& object, int depth)
 {
@@ -29,6 +34,7 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
         }
         return colour(0.0, 0.0, 0.0);
 	}
+
     vec3 unit_direction = unit(r.direction);
     auto t = 0.5*(unit_direction.y + 1.0);
     return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
@@ -37,8 +43,8 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
 int main()
 {
     //Defining image properties and camera
-    double aspect_ratio = 16.0/9.0;
-    int img_width  = 2000;
+    double aspect_ratio = 1.0/1.0;
+    int img_width  = 1200;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     int samples_per_pixel = 100;
 
@@ -48,7 +54,7 @@ int main()
     double fov_angle = 20.0;
     double aperture = 2.0;
     double focus_distance = (lookfrom - lookat).length();
-    bool dof = true;
+    bool dof = false;
     camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
 /*     //Defining objects and materials
@@ -78,8 +84,7 @@ int main()
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0), -0.45, material_left));
     world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
 
-    //Iterating through pixels
-    int index = 0;
+    int no_of_threads = std::thread::hardware_concurrency();
 
     ofstream image ("image.ppm");
     if (image.is_open())
@@ -88,23 +93,44 @@ int main()
         image << "P3\n" << img_width << ' ' << img_height << "\n255\n";
         for (int i = img_height; i > 0; i--)
         {
-            for (int j = 0; j < img_width; j++)
+            for (int j = 0; j < img_width; j = j + no_of_threads)
             {
-                colour pixel = colour(0.0, 0.0, 0.0);
-                for (int s = 0; s < samples_per_pixel; s++)
+                mutex mutex;
+                auto render_pixel = [&] (int x)
                 {
-                    double u = (static_cast<double>(j) + random_double()) / static_cast<double>(img_width);
-                    double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
-                    ray r = cam.get_ray(u, v);
-                    pixel += colour_ray(r, world, 1);
+                    colour pixel = colour(0.0, 0.0, 0.0);
+                    for (int s = 0; s < samples_per_pixel; s++)
+                    {
+                        double u = (static_cast<double>(x) + random_double()) / static_cast<double>(img_width);
+                        double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
+                        ray r = cam.get_ray(u, v);
+                        pixel += colour_ray(r, world, 1);
+                    }
+                    pixel *= (1.0 / static_cast<double>(samples_per_pixel));
+                    return pixel;
+                };
+                auto output_pixel = [&] (colour pixel)
+                {
+                    int red = static_cast<int>(pixel.x * 255);
+                    int green = static_cast<int>(pixel.y * 255);
+                    int blue = static_cast<int>(pixel.z * 255);
+                    mutex.lock();
+                    image << red << ' ' << green << ' ' << blue << '\n';
+                    cout << "Rendered: " << (index*100)/(img_width*img_height) << '%' << " - remaining pixels: " << img_width*img_height - 1 - index << '\n';
+                    mutex.unlock();
+                    index++;
+                };
+
+                //Concurrency
+                vector<std::future<colour>> futures;
+                for(int i = 0; i < no_of_threads; i++)
+                {
+                    futures.push_back(std::async(render_pixel, j + i));
                 }
-                pixel *= (1.0 / static_cast<double>(samples_per_pixel));
-                int red = static_cast<int>(pixel.x * 255);
-                int green = static_cast<int>(pixel.y * 255);
-                int blue = static_cast<int>(pixel.z * 255);
-                image << red << ' ' << green << ' ' << blue << '\n';
-                cout << "Rendered: " << (index*100)/(img_width*img_height) << '%' << " - remaining pixels: " << img_width*img_height - 1 - index << '\n';
-                index++;
+                for (auto& f : futures)
+                {
+                    output_pixel(f.get());
+                }
             }
         }
         image.close();
