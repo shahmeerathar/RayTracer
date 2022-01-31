@@ -2,7 +2,7 @@
 
 hittable_list::hittable_list()
 {
-    std::cout << "Initialised hittable_list object";
+    std::cout << "Initialised hittable_list object\n";
 }
 
 void hittable_list::add(shared_ptr<hittable> object)
