@@ -1,51 +1,12 @@
 #include "Commons.h"
 #include "Camera.h"
-#include "Hittable.h"
 #include "Sphere.h"
 #include "HittableList.h"
 #include "Materials.h"
-
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <thread>
-#include <mutex>
-#include <future>
-
-#define NS_PRIVATE_IMPLEMENTATION
-#define CA_PRIVATE_IMPLEMENTATION
-#define MTL_PRIVATE_IMPLEMENTATION
-
-#include <Metal/Metal.hpp>
+#include "CPURenderer.h"
+#include "GPURenderer.h"
 
 using namespace std;
-
-Colour colourRay(const Ray &r, const Hittable &object, int depth)
-{
-    HitRecord record;
-
-    if (depth > 50)
-    {
-        return {0.0, 0.0, 0.0};
-    }
-
-    if (object.hit(r, 0.001, infinity, record))
-    {
-        Ray scattered = r;
-        Colour attenuation;
-
-        if (record.mtrPtr->scatter(r, record, attenuation, scattered))
-        {
-            return attenuation * colourRay(scattered, object, depth + 1);
-        }
-
-        return {0.0, 0.0, 0.0};
-    }
-
-    Vec3 unitDirection = unit(r.direction);
-    auto t = 0.5 * (unitDirection.y + 1.0);
-    return (1.0 - t) * Colour(1.0, 1.0, 1.0) + t * Colour(0.5, 0.7, 1.0);
-}
 
 Camera getCamera(double aspect_ratio)
 {
@@ -95,69 +56,15 @@ HittableList getScene()
 
 int main()
 {
-    //Defining image properties and Camera
-    double aspectRatio = 1.0 / 1.0;
-    int imgWidth = 1200;
-    int imgHeight = static_cast<int>(static_cast<double>(imgWidth) / aspectRatio);
-    int samplesPerPixel = 100;
+    //Defining image properties and camera
+    ImageProperties imageProperties;
+    imageProperties.aspectRatio = 1.0 / 1.0;
+    imageProperties.imgWidth = 1200;
+    imageProperties.imgHeight = static_cast<int>(static_cast<double>(imageProperties.imgWidth) / imageProperties.aspectRatio);
+    imageProperties.samplesPerPixel = 100;
 
-    Camera cam = getCamera(aspectRatio);
-    HittableList scene = getScene();
+    CPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
+    renderer.render();
 
-    MTL::Device *device = MTL::CreateSystemDefaultDevice();
-    cout << device->name()->utf8String();
-
-    int noOfThreads = std::thread::hardware_concurrency();
-
-    ofstream image("../renders/image.ppm");
-    if (image.is_open())
-    {
-        int index = 0;
-        image << "P3\n" << imgWidth << ' ' << imgHeight << "\n255\n";
-        for (int i = imgHeight; i > 0; i--)
-        {
-            for (int j = 0; j < imgWidth; j = j + noOfThreads)
-            {
-                mutex mutex;
-                auto renderPixel = [&](int x)
-                {
-                    Colour pixel = Colour(0.0, 0.0, 0.0);
-                    for (int s = 0; s < samplesPerPixel; s++)
-                    {
-                        double u = (static_cast<double>(x) + randomDouble()) / static_cast<double>(imgWidth);
-                        double v = (static_cast<double>(i) + randomDouble()) / static_cast<double>(imgHeight);
-                        Ray r = cam.getRay(u, v);
-                        pixel += colourRay(r, scene, 1);
-                    }
-                    pixel *= (1.0 / static_cast<double>(samplesPerPixel));
-                    return pixel;
-                };
-                auto outputPixel = [&](Colour pixel)
-                {
-                    int red = static_cast<int>(pixel.x * 255);
-                    int green = static_cast<int>(pixel.y * 255);
-                    int blue = static_cast<int>(pixel.z * 255);
-                    mutex.lock();
-                    image << red << ' ' << green << ' ' << blue << '\n';
-                    cout << "Rendered: " << (index * 100) / (imgWidth * imgHeight) << '%' << " - remaining pixels: "
-                         << imgWidth * imgHeight - 1 - index << '\n';
-                    mutex.unlock();
-                    index++;
-                };
-
-                //Concurrency
-                vector<std::future<Colour>> futures;
-                for (int idx = 0; idx < noOfThreads; idx++)
-                {
-                    futures.push_back(std::async(renderPixel, j + idx));
-                }
-                for (auto &f: futures)
-                {
-                    outputPixel(f.get());
-                }
-            }
-        }
-        image.close();
-    }
     return 0;
 }
