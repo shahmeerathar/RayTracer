@@ -10,3 +10,4 @@ obj:
 clean:
 	rm -rf *.o
 	rm -rf ./RayTracer
+	rm -rf image.ppm
