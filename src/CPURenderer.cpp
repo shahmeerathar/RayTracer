@@ -32,8 +32,10 @@ void CPURenderer::render()
                     Colour pixel = Colour(0.0, 0.0, 0.0);
                     for (int s = 0; s < m_ImageProperties.samplesPerPixel; s++)
                     {
-                        double u = (static_cast<double>(x) + randomDouble()) / static_cast<double>(m_ImageProperties.imgWidth);
-                        double v = (static_cast<double>(i) + randomDouble()) / static_cast<double>(m_ImageProperties.imgHeight);
+                        double u = (static_cast<double>(x) + randomDouble()) /
+                                   static_cast<double>(m_ImageProperties.imgWidth);
+                        double v = (static_cast<double>(i) + randomDouble()) /
+                                   static_cast<double>(m_ImageProperties.imgHeight);
                         Ray r = m_Camera.getRay(u, v);
                         pixel += colourRay(r, m_Scene, 1);
                     }
@@ -47,14 +49,15 @@ void CPURenderer::render()
                     int blue = static_cast<int>(pixel.z * 255);
                     mutex.lock();
                     image << red << ' ' << green << ' ' << blue << '\n';
-                    cout << "Rendered: " << (index * 100) / (m_ImageProperties.imgWidth * m_ImageProperties.imgHeight) << '%' << " - remaining pixels: "
+                    cout << "Rendered: " << (index * 100) / (m_ImageProperties.imgWidth * m_ImageProperties.imgHeight)
+                         << '%' << " - remaining pixels: "
                          << m_ImageProperties.imgWidth * m_ImageProperties.imgHeight - 1 - index << '\n';
                     mutex.unlock();
                     index++;
                 };
 
                 //Concurrency
-                vector< std::future<Colour> > futures;
+                vector<std::future<Colour> > futures;
                 for (int idx = 0; idx < noOfThreads; idx++)
                 {
                     futures.push_back(std::async(renderPixel, j + idx));

@@ -15,7 +15,6 @@ public:
     CPURenderer(const ImageProperties &imageProperties, const Camera &camera, const HittableList &scene)
             : Renderer(imageProperties, camera, scene)
     {}
-
     void render() override;
 };
 
