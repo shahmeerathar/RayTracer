@@ -1,12 +1,12 @@
 #include "Ray.h"
 
-Ray::Ray(const point3 &ori, const vec3 &dir)
+Ray::Ray(const Point3 &ori, const Vec3 &dir)
 {
     origin = ori;
     direction = dir;
 }
 
-point3 Ray::at(double t) const
+Point3 Ray::at(double t) const
 {
     return origin + t * direction;
 }

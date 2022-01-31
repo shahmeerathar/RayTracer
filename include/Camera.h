@@ -10,16 +10,16 @@ public:
     double width;
     double height;
     double focusDistance;
-    vec3 z;
-    vec3 x;
-    vec3 y;
-    point3 origin;
-    vec3 horizontal;
-    vec3 vertical;
-    point3 lowerLeftCorner;
+    Vec3 z;
+    Vec3 x;
+    Vec3 y;
+    Point3 origin;
+    Vec3 horizontal;
+    Vec3 vertical;
+    Point3 lowerLeftCorner;
     double lensRadius;
     bool dof;
 
-    Camera(point3 from, point3 to, point3 up, double deg, double aspect, double aperture, double fd, bool dofFlag);
+    Camera(Point3 from, Point3 to, Point3 up, double deg, double aspect, double aperture, double fd, bool dofFlag);
     Ray getRay(double u, double v);
 };

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <limits>
 #include <memory>
-#include "vec3.h"
+#include "Vec3.h"
 #include "Ray.h"
 
 using namespace std;
@@ -48,23 +48,23 @@ inline double clamp(double x, double min, double max)
     return x;
 }
 
-inline vec3 randomUnitVector()
+inline Vec3 randomUnitVector()
 {
     double a = randomDouble(0, 2 * pi);
     double z = randomDouble(-1, 1);
     double r = sqrt(1 - z * z);
-    return vec3(r * cos(a), r * sin(a), z);
+    return Vec3(r * cos(a), r * sin(a), z);
 }
 
-inline vec3 reflect(const vec3 &v, const vec3 &n)
+inline Vec3 reflect(const Vec3 &v, const Vec3 &n)
 {
     return unit(v - 2 * dot(v, n) * n);
 }
 
-inline vec3 refract(const vec3 &inRay, const vec3 &normal, double &indexRatio)
+inline Vec3 refract(const Vec3 &inRay, const Vec3 &normal, double &indexRatio)
 {
-    vec3 rPerp = indexRatio * (inRay + (dot(-unit(inRay), unit(normal)) * normal));
-    vec3 rParr = -sqrt(fabs(1 - rPerp.length_squared())) * normal;
+    Vec3 rPerp = indexRatio * (inRay + (dot(-unit(inRay), unit(normal)) * normal));
+    Vec3 rParr = -sqrt(fabs(1 - rPerp.lengthSquared())) * normal;
     return rPerp + rParr;
 }
 
@@ -75,12 +75,12 @@ inline double schlick(double index, double cosine)
     return f0 + ((1 - f0) * pow(1 - cosine, 5));
 }
 
-inline vec3 randomInUnitDisk()
+inline Vec3 randomInUnitDisk()
 {
     while (true)
     {
-        auto p = vec3(randomDouble(-1, 1), randomDouble(-1, 1), 0);
-        if (p.length_squared() >= 1) continue;
+        auto p = Vec3(randomDouble(-1, 1), randomDouble(-1, 1), 0);
+        if (p.lengthSquared() >= 1) continue;
         return p;
     }
 }

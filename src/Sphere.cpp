@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <utility>
 
-Sphere::Sphere(point3 cen, double r, shared_ptr<Material> m)
+Sphere::Sphere(Point3 cen, double r, shared_ptr<Material> m)
 {
     centre = cen;
     radius = r;
@@ -13,10 +13,10 @@ Sphere::Sphere(point3 cen, double r, shared_ptr<Material> m)
 
 bool Sphere::hit(const Ray &r, double tMin, double tMax, HitRecord &record) const
 {
-    vec3 diff = r.origin - centre;
-    auto a = r.direction.length_squared();
+    Vec3 diff = r.origin - centre;
+    auto a = r.direction.lengthSquared();
     auto halfB = dot(diff, r.direction);
-    auto c = diff.length_squared() - radius * radius;
+    auto c = diff.lengthSquared() - radius * radius;
     auto discriminant = halfB * halfB - a * c;
 
     if (discriminant > 0)
@@ -27,7 +27,7 @@ bool Sphere::hit(const Ray &r, double tMin, double tMax, HitRecord &record) cons
         {
             record.t = tempT;
             record.point = r.at(record.t);
-            vec3 outNormal = unit((record.point - centre) / radius);
+            Vec3 outNormal = unit((record.point - centre) / radius);
             record.setFaceNormal(r, outNormal);
             record.mtrPtr = mtrPtr;
 
@@ -38,7 +38,7 @@ bool Sphere::hit(const Ray &r, double tMin, double tMax, HitRecord &record) cons
         {
             record.t = tempT;
             record.point = r.at(record.t);
-            vec3 outNormal = unit((record.point - centre) / radius);
+            Vec3 outNormal = unit((record.point - centre) / radius);
             record.setFaceNormal(r, outNormal);
             record.mtrPtr = mtrPtr;
 

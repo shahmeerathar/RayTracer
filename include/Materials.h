@@ -7,26 +7,26 @@ struct HitRecord;
 class Material
 {
 public:
-    virtual bool scatter(const Ray &inRay, const HitRecord &record, colour &attenuation, Ray &scattered) const = 0;
+    virtual bool scatter(const Ray &inRay, const HitRecord &record, Colour &attenuation, Ray &scattered) const = 0;
 };
 
 class Lambertian : public Material
 {
 public:
-    colour albedo;
+    Colour albedo;
 
-    explicit Lambertian(const colour &a);
-    bool scatter(const Ray &inRay, const HitRecord &record, colour &attenuation, Ray &scattered) const override;
+    Lambertian(const Colour &a);
+    bool scatter(const Ray &inRay, const HitRecord &record, Colour &attenuation, Ray &scattered) const override;
 };
 
 class Metal : public Material
 {
 public:
-    colour albedo;
+    Colour albedo;
     double fuzz;
 
-    Metal(const colour &a, double f);
-    bool scatter(const Ray &inRay, const HitRecord &record, colour &attenuation, Ray &scattered) const override;
+    Metal(const Colour &a, double f);
+    bool scatter(const Ray &inRay, const HitRecord &record, Colour &attenuation, Ray &scattered) const override;
 };
 
 class Dielectric : public Material
@@ -34,6 +34,6 @@ class Dielectric : public Material
 public:
     double refractiveIndex;
 
-    explicit Dielectric(double ri);
-    bool scatter(const Ray &inRay, const HitRecord &record, colour &attenuation, Ray &scattered) const override;
+    Dielectric(double ri);
+    bool scatter(const Ray &inRay, const HitRecord &record, Colour &attenuation, Ray &scattered) const override;
 };

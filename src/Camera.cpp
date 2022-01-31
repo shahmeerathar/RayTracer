@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(point3 from, point3 to, point3 up, double deg, double aspect, double aperture, double fd, bool dofFlag)
+Camera::Camera(Point3 from, Point3 to, Point3 up, double deg, double aspect, double aperture, double fd, bool dofFlag)
 {
     angle = deg;
     aspectRatio = aspect;
@@ -31,8 +31,8 @@ Ray Camera::getRay(double u, double v)
 {
     if (dof)
     {
-        vec3 discPoint = lensRadius * randomInUnitDisk();
-        vec3 offset = (x * discPoint.x) + (y * discPoint.y);
+        Vec3 discPoint = lensRadius * randomInUnitDisk();
+        Vec3 offset = (x * discPoint.x) + (y * discPoint.y);
         return Ray(origin + offset, lowerLeftCorner + u * horizontal + v * vertical - origin - offset);
     } else
     {

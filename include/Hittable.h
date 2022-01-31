@@ -6,13 +6,13 @@ class Material;
 
 struct HitRecord
 {
-    point3 point;
-    vec3 normal;
+    Point3 point;
+    Vec3 normal;
     shared_ptr<Material> mtrPtr;
     double t;
     bool frontFace;
 
-    inline void setFaceNormal(const Ray &r, const vec3 &outwardNormal)
+    inline void setFaceNormal(const Ray &r, const Vec3 &outwardNormal)
     {
         frontFace = dot(r.direction, outwardNormal) < 0;
         normal = frontFace ? outwardNormal : -outwardNormal;

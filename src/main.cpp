@@ -20,7 +20,7 @@
 using namespace std;
 
 
-colour colour_ray(const Ray& r, const Hittable& object, int depth)
+Colour colour_ray(const Ray& r, const Hittable& object, int depth)
 {
 	HitRecord record;
 
@@ -32,24 +32,24 @@ colour colour_ray(const Ray& r, const Hittable& object, int depth)
 	if (object.hit(r, 0.001, infinity, record))
 	{
         Ray scattered = r;
-        colour attenuation;
+        Colour attenuation;
         if (record.mtrPtr->scatter(r, record, attenuation, scattered))
         {
             return attenuation * colour_ray(scattered, object, depth + 1);
         }
-        return colour(0.0, 0.0, 0.0);
+        return Colour(0.0, 0.0, 0.0);
 	}
 
-    vec3 unit_direction = unit(r.direction);
+    Vec3 unit_direction = unit(r.direction);
     auto t = 0.5*(unit_direction.y + 1.0);
-    return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
+    return (1.0-t) * Colour(1.0, 1.0, 1.0) + t * Colour(0.5, 0.7, 1.0);
 }
 
 Camera get_camera(double aspect_ratio)
 {
-    point3 lookfrom = point3(3,3,2);
-    point3 lookat = point3(0,0,-1);
-    point3 vup = vec3(0,1,0);
+    Point3 lookfrom = Point3(3, 3, 2);
+    Point3 lookat = Point3(0, 0, -1);
+    Point3 vup = Vec3(0, 1, 0);
     double fov_angle = 20.0;
     double aperture = 2.0;
     double focus_distance = (lookfrom - lookat).length();
@@ -62,31 +62,31 @@ Camera get_camera(double aspect_ratio)
 HittableList get_scene()
 {
     //Defining objects and materials
-    shared_ptr<Material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
-    shared_ptr<Material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
-    shared_ptr<Material> material_3 = make_shared<Metal>(colour(0.8, 0.8, 0.8), 0.001);
-    shared_ptr<Material> material_4 = make_shared<Metal>(colour(0.8, 0.6, 0.2), 0.2);
+    shared_ptr<Material> material_1 = make_shared<Lambertian>(Colour(0.8, 0.8, 0.0));
+    shared_ptr<Material> material_2 = make_shared<Lambertian>(Colour(0.7, 0.3, 0.3));
+    shared_ptr<Material> material_3 = make_shared<Metal>(Colour(0.8, 0.8, 0.8), 0.001);
+    shared_ptr<Material> material_4 = make_shared<Metal>(Colour(0.8, 0.6, 0.2), 0.2);
     shared_ptr<Material> material_5 = make_shared<Dielectric>(1.5);
 
     HittableList objects = HittableList();
-    objects.add(make_shared<Sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
-    objects.add(make_shared<Sphere>(point3(0.0, -100.5, -1), 100, material_2));
-    objects.add(make_shared<Sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
-    objects.add(make_shared<Sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
-    objects.add(make_shared<Sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
+    objects.add(make_shared<Sphere>(Point3(0.0, 0.0, -1), 0.5, material_1));
+    objects.add(make_shared<Sphere>(Point3(0.0, -100.5, -1), 100, material_2));
+    objects.add(make_shared<Sphere>(Point3(0.25, 0.25, -0.5), 0.1, material_4));
+    objects.add(make_shared<Sphere>(Point3(-0.25, 0.25, -0.5), 0.1, material_3));
+    objects.add(make_shared<Sphere>(Point3(0.0, 0.3, -0.6), 0.15, material_5));
 
     HittableList world;
 
-    auto material_ground = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
-    auto material_center = make_shared<Lambertian>(colour(0.1, 0.2, 0.5));
-    auto material_left = make_shared<Lambertian>(colour(0.5, 0.2, 0.3));
-    auto material_right  = make_shared<Metal>(colour(0.8, 0.6, 0.2), 0.0);
+    auto material_ground = make_shared<Lambertian>(Colour(0.8, 0.8, 0.0));
+    auto material_center = make_shared<Lambertian>(Colour(0.1, 0.2, 0.5));
+    auto material_left = make_shared<Lambertian>(Colour(0.5, 0.2, 0.3));
+    auto material_right  = make_shared<Metal>(Colour(0.8, 0.6, 0.2), 0.0);
 
-    world.add(make_shared<Sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(make_shared<Sphere>(point3(0.0, 0.0, -1.0), 0.5, material_center));
-    world.add(make_shared<Sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
-    world.add(make_shared<Sphere>(point3(-1.0, 0.0, -1.0), -0.45, material_left));
-    world.add(make_shared<Sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
+    world.add(make_shared<Sphere>(Point3(0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(make_shared<Sphere>(Point3(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), -0.45, material_left));
+    world.add(make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, material_right));
 
     return world;
 }
@@ -119,7 +119,7 @@ int main()
                 mutex mutex;
                 auto render_pixel = [&] (int x)
                 {
-                    colour pixel = colour(0.0, 0.0, 0.0);
+                    Colour pixel = Colour(0.0, 0.0, 0.0);
                     for (int s = 0; s < samples_per_pixel; s++)
                     {
                         double u = (static_cast<double>(x) + randomDouble()) / static_cast<double>(img_width);
@@ -130,7 +130,7 @@ int main()
                     pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                     return pixel;
                 };
-                auto output_pixel = [&] (colour pixel)
+                auto output_pixel = [&] (Colour pixel)
                 {
                     int red = static_cast<int>(pixel.x * 255);
                     int green = static_cast<int>(pixel.y * 255);
@@ -143,7 +143,7 @@ int main()
                 };
 
                 //Concurrency
-                vector<std::future<colour>> futures;
+                vector<std::future<Colour>> futures;
                 for(int i = 0; i < no_of_threads; i++)
                 {
                     futures.push_back(std::async(render_pixel, j + i));
