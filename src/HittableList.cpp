@@ -15,21 +15,21 @@ void HittableList::clear()
     objects.clear();
 }
 
-bool HittableList::hit(const ray& r, double tMin, double tMax, HitRecord& record) const
+bool HittableList::hit(const ray &r, double tMin, double tMax, HitRecord &record) const
 {
     HitRecord temp;
-    bool hits_made = false;
+    bool hitsMade = false;
     double closest = tMax;
 
-    for (const auto& object : objects)
+    for (const auto &object: objects)
     {
         if (object->hit(r, tMin, closest, temp))
         {
-            hits_made = true;
+            hitsMade = true;
             closest = temp.t;
             record = temp;
         }
     }
 
-    return hits_made;
+    return hitsMade;
 }

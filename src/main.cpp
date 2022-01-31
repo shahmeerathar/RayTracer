@@ -3,7 +3,7 @@
 #include "Hittable.h"
 #include "sphere.h"
 #include "HittableList.h"
-#include "materials.h"
+#include "Materials.h"
 
 #include <iostream>
 #include <fstream>
@@ -64,9 +64,9 @@ HittableList get_scene()
     //Defining objects and materials
     shared_ptr<Material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<Material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
-    shared_ptr<Material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
-    shared_ptr<Material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.2);
-    shared_ptr<Material> material_5 = make_shared<dielectric>(1.5);
+    shared_ptr<Material> material_3 = make_shared<Metal>(colour(0.8, 0.8, 0.8), 0.001);
+    shared_ptr<Material> material_4 = make_shared<Metal>(colour(0.8, 0.6, 0.2), 0.2);
+    shared_ptr<Material> material_5 = make_shared<Dielectric>(1.5);
 
     HittableList objects = HittableList();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
@@ -80,7 +80,7 @@ HittableList get_scene()
     auto material_ground = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     auto material_center = make_shared<Lambertian>(colour(0.1, 0.2, 0.5));
     auto material_left = make_shared<Lambertian>(colour(0.5, 0.2, 0.3));
-    auto material_right  = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.0);
+    auto material_right  = make_shared<Metal>(colour(0.8, 0.6, 0.2), 0.0);
 
     world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
     world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
