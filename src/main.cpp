@@ -1,5 +1,5 @@
 #include "commons.h"
-#include "camera.h"
+#include "Camera.h"
 #include "hittable.h"
 #include "sphere.h"
 #include "hittable_list.h"
@@ -45,7 +45,7 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
     return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
 }
 
-camera get_camera(double aspect_ratio)
+Camera get_camera(double aspect_ratio)
 {
     point3 lookfrom = point3(3,3,2);
     point3 lookat = point3(0,0,-1);
@@ -54,7 +54,7 @@ camera get_camera(double aspect_ratio)
     double aperture = 2.0;
     double focus_distance = (lookfrom - lookat).length();
     bool dof = false;
-    camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
+    Camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
     return cam;
 }
@@ -93,13 +93,13 @@ hittable_list get_scene()
 
 int main()
 {
-    //Defining image properties and camera
+    //Defining image properties and Camera
     double aspect_ratio = 1.0/1.0;
     int img_width  = 1200;
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     int samples_per_pixel = 100;
 
-    camera cam = get_camera(aspect_ratio);
+    Camera cam = get_camera(aspect_ratio);
     hittable_list scene = get_scene();
 
     MTL::Device* device = MTL::CreateSystemDefaultDevice();
@@ -124,7 +124,7 @@ int main()
                     {
                         double u = (static_cast<double>(x) + random_double()) / static_cast<double>(img_width);
                         double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
-                        ray r = cam.get_ray(u, v);
+                        ray r = cam.getRay(u, v);
                         pixel += colour_ray(r, scene, 1);
                     }
                     pixel *= (1.0 / static_cast<double>(samples_per_pixel));
