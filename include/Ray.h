@@ -1,12 +1,13 @@
 #pragma once
+
 #include "vec3.h"
 
-class ray
+class Ray
 {
-    public:
+public:
     point3 origin;
     vec3 direction;
 
-    ray(const point3& ori, const vec3& dir);
+    Ray(const point3 &ori, const vec3 &dir);
     point3 at(double t) const;
 };

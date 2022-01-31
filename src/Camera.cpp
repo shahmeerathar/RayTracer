@@ -27,15 +27,15 @@ Camera::Camera(point3 from, point3 to, point3 up, double deg, double aspect, dou
     lensRadius = aperture / 2;
 }
 
-ray Camera::getRay(double u, double v)
+Ray Camera::getRay(double u, double v)
 {
     if (dof)
     {
         vec3 discPoint = lensRadius * randomInUnitDisk();
         vec3 offset = (x * discPoint.x) + (y * discPoint.y);
-        return ray(origin + offset, lowerLeftCorner + u * horizontal + v * vertical - origin - offset);
+        return Ray(origin + offset, lowerLeftCorner + u * horizontal + v * vertical - origin - offset);
     } else
     {
-        return ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
+        return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
     }
 }

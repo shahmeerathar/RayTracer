@@ -21,5 +21,5 @@ public:
     bool dof;
 
     Camera(point3 from, point3 to, point3 up, double deg, double aspect, double aperture, double fd, bool dofFlag);
-    ray getRay(double u, double v);
+    Ray getRay(double u, double v);
 };

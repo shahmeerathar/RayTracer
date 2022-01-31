@@ -1,7 +1,7 @@
 #include "Commons.h"
 #include "Camera.h"
 #include "Hittable.h"
-#include "sphere.h"
+#include "Sphere.h"
 #include "HittableList.h"
 #include "Materials.h"
 
@@ -20,7 +20,7 @@
 using namespace std;
 
 
-colour colour_ray(const ray& r, const Hittable& object, int depth)
+colour colour_ray(const Ray& r, const Hittable& object, int depth)
 {
 	HitRecord record;
 
@@ -31,7 +31,7 @@ colour colour_ray(const ray& r, const Hittable& object, int depth)
 
 	if (object.hit(r, 0.001, infinity, record))
 	{
-        ray scattered = r;
+        Ray scattered = r;
         colour attenuation;
         if (record.mtrPtr->scatter(r, record, attenuation, scattered))
         {
@@ -69,11 +69,11 @@ HittableList get_scene()
     shared_ptr<Material> material_5 = make_shared<Dielectric>(1.5);
 
     HittableList objects = HittableList();
-    objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
-    objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
-    objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
-    objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
-    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
+    objects.add(make_shared<Sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
+    objects.add(make_shared<Sphere>(point3(0.0, -100.5, -1), 100, material_2));
+    objects.add(make_shared<Sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
+    objects.add(make_shared<Sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
+    objects.add(make_shared<Sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
 
     HittableList world;
 
@@ -82,11 +82,11 @@ HittableList get_scene()
     auto material_left = make_shared<Lambertian>(colour(0.5, 0.2, 0.3));
     auto material_right  = make_shared<Metal>(colour(0.8, 0.6, 0.2), 0.0);
 
-    world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
-    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
-    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0), -0.45, material_left));
-    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+    world.add(make_shared<Sphere>(point3(0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(make_shared<Sphere>(point3(0.0, 0.0, -1.0), 0.5, material_center));
+    world.add(make_shared<Sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
+    world.add(make_shared<Sphere>(point3(-1.0, 0.0, -1.0), -0.45, material_left));
+    world.add(make_shared<Sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
 
     return world;
 }
@@ -124,7 +124,7 @@ int main()
                     {
                         double u = (static_cast<double>(x) + randomDouble()) / static_cast<double>(img_width);
                         double v = (static_cast<double>(i) + randomDouble()) / static_cast<double>(img_height);
-                        ray r = cam.getRay(u, v);
+                        Ray r = cam.getRay(u, v);
                         pixel += colour_ray(r, scene, 1);
                     }
                     pixel *= (1.0 / static_cast<double>(samples_per_pixel));

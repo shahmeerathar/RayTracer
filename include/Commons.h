@@ -6,7 +6,7 @@
 #include <limits>
 #include <memory>
 #include "vec3.h"
-#include "ray.h"
+#include "Ray.h"
 
 using namespace std;
 

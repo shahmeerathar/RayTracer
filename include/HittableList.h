@@ -15,5 +15,5 @@ public:
     HittableList();
     void add(shared_ptr<Hittable> object);
     void clear();
-    bool hit(const ray &r, double tMin, double tMax, HitRecord &record) const override;
+    bool hit(const Ray &r, double tMin, double tMax, HitRecord &record) const override;
 };

@@ -15,7 +15,7 @@ void HittableList::clear()
     objects.clear();
 }
 
-bool HittableList::hit(const ray &r, double tMin, double tMax, HitRecord &record) const
+bool HittableList::hit(const Ray &r, double tMin, double tMax, HitRecord &record) const
 {
     HitRecord temp;
     bool hitsMade = false;
