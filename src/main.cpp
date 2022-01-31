@@ -102,6 +102,9 @@ int main()
     camera cam = get_camera(aspect_ratio);
     hittable_list scene = get_scene();
 
+    MTL::Device* device = MTL::CreateSystemDefaultDevice();
+    cout << device->name()->utf8String();
+
     int no_of_threads = std::thread::hardware_concurrency();
 
     ofstream image ("../renders/image.ppm");
