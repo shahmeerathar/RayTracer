@@ -86,7 +86,7 @@ int main()
 
     int no_of_threads = std::thread::hardware_concurrency();
 
-    ofstream image ("image.ppm");
+    ofstream image ("../renders/image.ppm");
     if (image.is_open())
     {
         int index = 0;

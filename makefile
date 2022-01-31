@@ -1,13 +1,25 @@
+OBJDIR = obj
+SRCDIR = src
+OUT = bin/RayTracer
+
+_SRCS = main.cpp camera.cpp hittable_list.cpp materials.cpp ray.cpp sphere.cpp vec3.cpp
+SRCS = $(patsubst %,$(SRCDIR)/%,$(_SRCS))
+_OBJS = main.o camera.o hittable_list.o materials.o ray.o sphere.o vec3.o
+OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
+
+CC = g++
+CFLAGS = -std=c++20 -O3 -Iinclude
+rmO = rm -rf $(OBJDIR)/*.o
+
 all: raytracer
 
-raytracer: obj
-	g++ -std=c++20 -o RayTracer -O3 main.o camera.o hittable_list.o materials.o ray.o sphere.o vec3.o
-	rm -rf *.o
+raytracer: $(OBJS)
+	$(CC) $(CFLAGS) -o $(OUT) $(OBJS)
 
-obj:
-	g++ -std=c++20 -c main.cpp camera.cpp hittable_list.cpp materials.cpp ray.cpp sphere.cpp vec3.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf *.o
-	rm -rf ./RayTracer
-	rm -rf image.ppm
+	$(rmO)
+	rm -rf bin/RayTracer
+	rm -rf renders/image.ppm
