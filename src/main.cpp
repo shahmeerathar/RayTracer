@@ -26,7 +26,7 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
 
     if (depth > 50)
     {
-        return colour(0.0, 0.0, 0.0);
+        return {0.0, 0.0, 0.0};
     }
 
 	if (object.hit(r, 0.001, infinity, record))
@@ -45,14 +45,8 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
     return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
 }
 
-int main()
+camera get_camera()
 {
-    //Defining image properties and camera
-    double aspect_ratio = 1.0/1.0;
-    int img_width  = 1200;
-    int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
-    int samples_per_pixel = 100;
-
     point3 lookfrom = point3(3,3,2);
     point3 lookat = point3(0,0,-1);
     point3 vup = vec3(0,1,0);
@@ -62,6 +56,11 @@ int main()
     bool dof = false;
     camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
+    return cam;
+}
+
+hittable_list get_scene()
+{
     //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
@@ -88,6 +87,20 @@ int main()
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
     world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0), -0.45, material_left));
     world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
+
+    return world;
+}
+
+int main()
+{
+    //Defining image properties and camera
+    double aspect_ratio = 1.0/1.0;
+    int img_width  = 1200;
+    int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
+    int samples_per_pixel = 100;
+
+    camera cam = get_camera();
+    hittable_list scene = get_scene();
 
     int no_of_threads = std::thread::hardware_concurrency();
 
