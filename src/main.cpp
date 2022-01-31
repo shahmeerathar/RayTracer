@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "Hittable.h"
 #include "sphere.h"
-#include "hittable_list.h"
+#include "HittableList.h"
 #include "materials.h"
 
 #include <iostream>
@@ -59,7 +59,7 @@ Camera get_camera(double aspect_ratio)
     return cam;
 }
 
-hittable_list get_scene()
+HittableList get_scene()
 {
     //Defining objects and materials
     shared_ptr<Material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
@@ -68,14 +68,14 @@ hittable_list get_scene()
     shared_ptr<Material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.2);
     shared_ptr<Material> material_5 = make_shared<dielectric>(1.5);
 
-    hittable_list objects = hittable_list();
+    HittableList objects = HittableList();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
     objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
     objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
     objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
 
-    hittable_list world;
+    HittableList world;
 
     auto material_ground = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     auto material_center = make_shared<Lambertian>(colour(0.1, 0.2, 0.5));
@@ -100,7 +100,7 @@ int main()
     int samples_per_pixel = 100;
 
     Camera cam = get_camera(aspect_ratio);
-    hittable_list scene = get_scene();
+    HittableList scene = get_scene();
 
     MTL::Device* device = MTL::CreateSystemDefaultDevice();
     cout << device->name()->utf8String();

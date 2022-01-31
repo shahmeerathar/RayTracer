@@ -3,9 +3,9 @@ SRCDIR = src
 OUTDIR = bin
 OUT = $(OUTDIR)/RayTracer
 
-_SRCS = main.cpp Camera.cpp hittable_list.cpp materials.cpp ray.cpp sphere.cpp vec3.cpp
+_SRCS = main.cpp Camera.cpp HittableList.cpp materials.cpp ray.cpp sphere.cpp vec3.cpp
 SRCS = $(patsubst %,$(SRCDIR)/%,$(_SRCS))
-_OBJS = main.o Camera.o hittable_list.o materials.o ray.o sphere.o vec3.o
+_OBJS = main.o Camera.o HittableList.o materials.o ray.o sphere.o vec3.o
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 
 METALPATH = lib/metal-cpp

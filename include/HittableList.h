@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Hittable.h"
 #include <iostream>
 #include <memory>
@@ -6,13 +7,13 @@
 
 using namespace std;
 
-class hittable_list : public Hittable
+class HittableList : public Hittable
 {
-    public:
+public:
     vector<shared_ptr<Hittable>> objects;
 
-    hittable_list();
+    HittableList();
     void add(shared_ptr<Hittable> object);
     void clear();
-    virtual bool hit(const ray& r, double t_min, double t_max, HitRecord& record) const override;
+    bool hit(const ray &r, double tMin, double tMax, HitRecord &record) const override;
 };
