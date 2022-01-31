@@ -57,7 +57,7 @@ int main()
     bool dof = false;
     camera cam(lookfrom, lookat, vup, fov_angle, aspect_ratio, aperture, focus_distance, dof);
 
-/*     //Defining objects and materials
+    //Defining objects and materials
     shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
     shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
     shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
@@ -69,7 +69,7 @@ int main()
     objects.add(make_shared<sphere>(point3(0.0, -100.5, -1), 100, material_2));
     objects.add(make_shared<sphere>(point3(0.25, 0.25, -0.5), 0.1, material_4));
     objects.add(make_shared<sphere>(point3(-0.25, 0.25, -0.5), 0.1, material_3));
-    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5)); */
+    objects.add(make_shared<sphere>(point3(0.0, 0.3, -0.6), 0.15, material_5));
 
     hittable_list world;
 
@@ -104,7 +104,7 @@ int main()
                         double u = (static_cast<double>(x) + random_double()) / static_cast<double>(img_width);
                         double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
                         ray r = cam.get_ray(u, v);
-                        pixel += colour_ray(r, world, 1);
+                        pixel += colour_ray(r, objects, 1);
                     }
                     pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                     return pixel;
