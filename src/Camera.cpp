@@ -4,7 +4,7 @@ Camera::Camera(point3 from, point3 to, point3 up, double deg, double aspect, dou
 {
     angle = deg;
     aspectRatio = aspect;
-    height = 2.0 * tan(deg_to_rad(angle) / 2);;
+    height = 2.0 * tan(degToRad(angle) / 2);;
     width = height * aspectRatio;
     dof = dofFlag;
     if (dof)
@@ -31,7 +31,7 @@ ray Camera::getRay(double u, double v)
 {
     if (dof)
     {
-        vec3 discPoint = lensRadius * random_in_unit_disk();
+        vec3 discPoint = lensRadius * randomInUnitDisk();
         vec3 offset = (x * discPoint.x) + (y * discPoint.y);
         return ray(origin + offset, lowerLeftCorner + u * horizontal + v * vertical - origin - offset);
     } else

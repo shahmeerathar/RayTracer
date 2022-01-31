@@ -1,4 +1,4 @@
-#include "commons.h"
+#include "Commons.h"
 #include "Camera.h"
 #include "hittable.h"
 #include "sphere.h"
@@ -122,8 +122,8 @@ int main()
                     colour pixel = colour(0.0, 0.0, 0.0);
                     for (int s = 0; s < samples_per_pixel; s++)
                     {
-                        double u = (static_cast<double>(x) + random_double()) / static_cast<double>(img_width);
-                        double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
+                        double u = (static_cast<double>(x) + randomDouble()) / static_cast<double>(img_width);
+                        double v = (static_cast<double>(i) + randomDouble()) / static_cast<double>(img_height);
                         ray r = cam.getRay(u, v);
                         pixel += colour_ray(r, scene, 1);
                     }
