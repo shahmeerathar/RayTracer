@@ -1,6 +1,6 @@
 #include "Commons.h"
 #include "Camera.h"
-#include "hittable.h"
+#include "Hittable.h"
 #include "sphere.h"
 #include "hittable_list.h"
 #include "materials.h"
@@ -20,9 +20,9 @@
 using namespace std;
 
 
-colour colour_ray(const ray& r, const hittable& object, int depth)
+colour colour_ray(const ray& r, const Hittable& object, int depth)
 {
-	hit_record record;
+	HitRecord record;
 
     if (depth > 50)
     {
@@ -33,7 +33,7 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
 	{
         ray scattered = r;
         colour attenuation;
-        if (record.mtr_ptr->scatter(r, record, attenuation, scattered))
+        if (record.mtrPtr->scatter(r, record, attenuation, scattered))
         {
             return attenuation * colour_ray(scattered, object, depth + 1);
         }
@@ -62,11 +62,11 @@ Camera get_camera(double aspect_ratio)
 hittable_list get_scene()
 {
     //Defining objects and materials
-    shared_ptr<material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
-    shared_ptr<material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
-    shared_ptr<material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
-    shared_ptr<material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.2);
-    shared_ptr<material> material_5 = make_shared<dielectric>(1.5);
+    shared_ptr<Material> material_1 = make_shared<Lambertian>(colour(0.8, 0.8, 0.0));
+    shared_ptr<Material> material_2 = make_shared<Lambertian>(colour(0.7, 0.3, 0.3));
+    shared_ptr<Material> material_3 = make_shared<metal>(colour(0.8, 0.8, 0.8), 0.001);
+    shared_ptr<Material> material_4 = make_shared<metal>(colour(0.8, 0.6, 0.2), 0.2);
+    shared_ptr<Material> material_5 = make_shared<dielectric>(1.5);
 
     hittable_list objects = hittable_list();
     objects.add(make_shared<sphere>(point3(0.0, 0.0, -1), 0.5, material_1));

@@ -1,18 +1,18 @@
 #pragma once
-#include "hittable.h"
+#include "Hittable.h"
 #include <iostream>
 #include <memory>
 #include <vector>
 
 using namespace std;
 
-class hittable_list : public hittable
+class hittable_list : public Hittable
 {
     public:
-    vector<shared_ptr<hittable>> objects;
+    vector<shared_ptr<Hittable>> objects;
 
     hittable_list();
-    void add(shared_ptr<hittable> object);
+    void add(shared_ptr<Hittable> object);
     void clear();
-    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& record) const override;
+    virtual bool hit(const ray& r, double t_min, double t_max, HitRecord& record) const override;
 };

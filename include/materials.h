@@ -1,35 +1,35 @@
 #pragma once
-#include "hittable.h"
+#include "Hittable.h"
 
-struct hit_record;
+struct HitRecord;
 
-class material
+class Material
 {
     public:
-    virtual bool scatter(const ray& in_ray, const hit_record& record, colour& attenuation, ray& scattered) const = 0;
+    virtual bool scatter(const ray& in_ray, const HitRecord& record, colour& attenuation, ray& scattered) const = 0;
 };
 
-class Lambertian : public material
+class Lambertian : public Material
 {
     public:
     colour albedo;
     Lambertian(const colour& a) : albedo(a) {}
-    virtual bool scatter(const ray& in_ray, const hit_record& record, colour& attenuation, ray& scattered) const override;
+    virtual bool scatter(const ray& in_ray, const HitRecord& record, colour& attenuation, ray& scattered) const override;
 };
 
-class metal : public material
+class metal : public Material
 {
     public:
     colour albedo;
     double fuzz;
     metal(const colour& a, double f) : albedo(a), fuzz(f) {}
-    virtual bool scatter(const ray& in_ray, const hit_record& record, colour& attenuation, ray& scattered) const override;
+    virtual bool scatter(const ray& in_ray, const HitRecord& record, colour& attenuation, ray& scattered) const override;
 };
 
-class dielectric : public material
+class dielectric : public Material
 {
     public:
     double refractive_index;
     dielectric(double ri);
-    virtual bool scatter(const ray& in_ray, const hit_record& record, colour& attenuation, ray& scattered) const override;
+    virtual bool scatter(const ray& in_ray, const HitRecord& record, colour& attenuation, ray& scattered) const override;
 };

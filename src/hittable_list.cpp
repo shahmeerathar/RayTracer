@@ -5,7 +5,7 @@ hittable_list::hittable_list()
     std::cout << "Initialised hittable_list object\n";
 }
 
-void hittable_list::add(shared_ptr<hittable> object)
+void hittable_list::add(shared_ptr<Hittable> object)
 {
     objects.push_back(object);
 }
@@ -15,9 +15,9 @@ void hittable_list::clear()
     objects.clear();
 }
 
-bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& record) const
+bool hittable_list::hit(const ray& r, double t_min, double t_max, HitRecord& record) const
 {
-    hit_record temp;
+    HitRecord temp;
     bool hits_made = false;
     double closest = t_max;
 
