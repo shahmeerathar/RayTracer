@@ -45,7 +45,7 @@ colour colour_ray(const ray& r, const hittable& object, int depth)
     return (1.0-t)*colour(1.0, 1.0, 1.0) + t*colour(0.5, 0.7, 1.0);
 }
 
-camera get_camera()
+camera get_camera(double aspect_ratio)
 {
     point3 lookfrom = point3(3,3,2);
     point3 lookat = point3(0,0,-1);
@@ -99,7 +99,7 @@ int main()
     int img_height = static_cast<int>(static_cast<double>(img_width) / aspect_ratio);
     int samples_per_pixel = 100;
 
-    camera cam = get_camera();
+    camera cam = get_camera(aspect_ratio);
     hittable_list scene = get_scene();
 
     int no_of_threads = std::thread::hardware_concurrency();
@@ -122,7 +122,7 @@ int main()
                         double u = (static_cast<double>(x) + random_double()) / static_cast<double>(img_width);
                         double v = (static_cast<double>(i) + random_double()) / static_cast<double>(img_height);
                         ray r = cam.get_ray(u, v);
-                        pixel += colour_ray(r, objects, 1);
+                        pixel += colour_ray(r, scene, 1);
                     }
                     pixel *= (1.0 / static_cast<double>(samples_per_pixel));
                     return pixel;
