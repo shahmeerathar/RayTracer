@@ -1,7 +1,7 @@
 all: raytracer
 
 raytracer: obj
-	g++ -std=c++11 -o RayTracer main.o camera.o hittable_list.o 	materials.o ray.o sphere.o vec3.o
+	g++ -std=c++11 -o RayTracer -O3 main.o camera.o hittable_list.o materials.o ray.o sphere.o vec3.o
 	rm -rf *.o
 
 obj:
