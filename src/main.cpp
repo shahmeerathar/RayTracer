@@ -4,7 +4,9 @@
 #include "HittableList.h"
 #include "Materials.h"
 #include "CPURenderer.h"
-#include "GPURenderer.h"
+#if defined(__APPLE__)
+    #include "GPURenderer.h"
+#endif
 
 using namespace std;
 
@@ -63,7 +65,12 @@ int main()
     imageProperties.imgHeight = static_cast<int>(static_cast<double>(imageProperties.imgWidth) / imageProperties.aspectRatio);
     imageProperties.samplesPerPixel = 100;
 
-    CPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
+    #if defined(__APPLE__)
+        GPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
+    #else
+        CPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
+    #endif
+
     renderer.render();
 
     return 0;

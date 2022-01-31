@@ -13,8 +13,8 @@
 
 void GPURenderer::render()
 {
-    cout << "Hello, I am a GPU renderer\n";
-
     MTL::Device *device = MTL::CreateSystemDefaultDevice();
-    cout << device->name()->utf8String();
+    auto gpuName = device->name()->utf8String();
+
+    cout << "Rendering on " << gpuName << endl;
 }
