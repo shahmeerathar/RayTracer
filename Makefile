@@ -8,8 +8,10 @@ SRCS = $(patsubst %,$(SRCDIR)/%,$(_SRCS))
 _OBJS = main.o camera.o hittable_list.o materials.o ray.o sphere.o vec3.o
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 
+METALPATH = lib/metal-cpp
+LIBS = -framework Foundation -framework Metal -framework QuartzCore
 CC = g++
-CFLAGS = -std=c++20 -O3 -Iinclude
+CFLAGS = -std=c++20 -O3 -Iinclude -I$(METALPATH) $(LIBS)
 rmO = rm -rf $(OBJDIR)/*.o
 
 all: $(OBJDIR) $(OUTDIR) raytracer
