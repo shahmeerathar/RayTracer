@@ -3,9 +3,11 @@
 //
 
 #include "GPURenderer.h"
+#include "GPURayTracer.h"
 
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
+
 #include <Foundation/Foundation.hpp>
 #include <Metal/Metal.hpp>
 
@@ -16,11 +18,15 @@ void GPURenderer::render()
     auto gpuName = mtlDevice->name()->utf8String();
     cout << "Rendering on " << gpuName << endl;
 
-    MTL::CommandQueue *commandQueue = mtlDevice->newCommandQueue();
-    MTL::Library *defaultLibrary = mtlDevice->newDefaultLibrary();
-    MTL::Function *rayTracing = defaultLibrary->newFunction(reinterpret_cast<const NS::String *>("rayTracing"));
     NS::Error **nsError;
-    MTL::ComputePipelineState *rtPipelineState = mtlDevice->newComputePipelineState(rayTracing, nsError);
+    MTL::CommandQueue *commandQueue = mtlDevice->newCommandQueue();
+    auto libraryData = dispatch_data_create(&lib_GPURayTracer_metallib[0], lib_GPURayTracer_metallib_len, dispatch_get_current_queue(), ^{});
+    MTL::Library *mtlLibrary = mtlDevice->newLibrary(libraryData, nsError);
+    NS::String *kernelFunctionName = NS::String::string("rayTrace", NS::ASCIIStringEncoding);
+    MTL::Function *rayTracingFunction = mtlLibrary->newFunction(kernelFunctionName);
+    MTL::ComputePipelineState *rtPipelineState = mtlDevice->newComputePipelineState(rayTracingFunction, nsError);
+
+    cout << rayTracingFunction->name();
 
     int threadsPerGroupWidth = rtPipelineState->threadExecutionWidth();
     int threadsPerGroupHeight = rtPipelineState->maxTotalThreadsPerThreadgroup() / threadsPerGroupWidth;

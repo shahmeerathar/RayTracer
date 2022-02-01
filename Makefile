@@ -1,34 +1,50 @@
-OBJDIR = obj
+BUILDDIR = build
 SRCDIR = src
 OUTDIR = bin
+LIBDIR = lib
 OUT = $(OUTDIR)/RayTracer
 
 _SRCS = main.cpp Camera.cpp HittableList.cpp Materials.cpp Ray.cpp Sphere.cpp Vec3.cpp Renderer.cpp CPURenderer.cpp GPURenderer.cpp
 SRCS = $(patsubst %,$(SRCDIR)/%,$(_SRCS))
 _OBJS = main.o Camera.o HittableList.o Materials.o Ray.o Sphere.o Vec3.o Renderer.o CPURenderer.o GPURenderer.o
-OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
+OBJS = $(patsubst %,$(BUILDDIR)/%,$(_OBJS))
+
+SHADER = GPURayTracer
+SHADERSRC = $(patsubst %,$(SRCDIR)/%,$(SHADER)).metal
+SHADERLIB = $(patsubst %,$(LIBDIR)/%,$(SHADER)).metallib
+SHADERH = $(patsubst %,$(SRCDIR)/%,$(SHADER)).h
 
 METALPATH = lib/metal-cpp
 LIBS = -framework Foundation -framework Metal -framework QuartzCore
 CC = g++
 CFLAGS = -std=c++20 -O3 -I$(METALPATH) $(LIBS)
-rmO = rm -rf $(OBJDIR)/*.o
+rmO = rm -rf $(BUILDDIR)/*.o
 
-all: $(OBJDIR) $(OUTDIR) raytracer
+all: $(BUILDDIR) $(OUTDIR) $(LIBDIR) raytracer
 
-$(OBJDIR):
+metal:
+	xcrun -sdk macosx metal -c $(SHADERSRC) -o $(BUILDDIR)/$(SHADER).air
+	xcrun -sdk macosx metallib $(BUILDDIR)/$(SHADER).air -o $(SHADERLIB)
+	xxd -i $(SHADERLIB) > $(SHADERH)
+
+$(BUILDDIR):
 	mkdir $@
 
 $(OUTDIR):
 	mkdir $@
 
-raytracer: $(OBJS)
+$(LIBDIR):
+	mkdir $@
+
+raytracer: metal $(OBJS)
 	$(CC) $(CFLAGS) -o $(OUT) $(OBJS)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+$(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf obj
-	rm -rf bin
+	rm -rf $(BUILDDIR)
+	rm -rf $(OUTDIR)
 	rm -rf renders/image.ppm
+	rm -rf $(LIBDIR)/*.metallib
+	rm -rf $(SHADERH)
