@@ -56,11 +56,33 @@ void GPURenderer::render()
     MTL::ComputeCommandEncoder *encoder = commandBuffer->computeCommandEncoder();
     encoder->setComputePipelineState(rtPipelineState);
 
+    // Set up texture for our ray tracing shader
+    MTL::TextureDescriptor *textureDescriptor = MTL::TextureDescriptor::alloc()->init();
+    textureDescriptor->setPixelFormat(MTL::PixelFormatRGBA8Unorm);
+    textureDescriptor->setWidth(m_ImageProperties.imgWidth);
+    textureDescriptor->setHeight(m_ImageProperties.imgHeight);
+    textureDescriptor->setUsage(MTL::TextureUsageShaderWrite);
+    textureDescriptor->setStorageMode(MTL::StorageModePrivate);
+    MTL::Texture *texture = mtlDevice->newTexture(textureDescriptor);
+    encoder->setTexture(texture, 0);
+
     // Dispatch kernel
     encoder->dispatchThreads(threadsPerGrid, threadsPerGroup);
     encoder->endEncoding();
     commandBuffer->commit();
     commandBuffer->waitUntilCompleted();
+
+    // Release objects
+    metalLibFilePath->release();
+    kernelFunctionName->release();
+    mtlDevice->release();
+    commandQueue->release();
+    mtlLibrary->release();
+    rayTracingFunction->release();
+    rtPipelineState->release();
+    commandBuffer->release();
+    encoder->release();
+    texture->release();
 
     cout << "Render complete!";
 }

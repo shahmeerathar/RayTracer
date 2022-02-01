@@ -2,7 +2,8 @@
 
 using namespace metal;
 
-kernel void rayTrace(uint2 index [[thread_position_in_grid]])
+kernel void rayTrace(texture2d<half, access::write>  renderTexture  [[texture(0)]],
+                     uint2 index [[thread_position_in_grid]])
 {
-    return;
+    renderTexture.write(half4(1.0, 0.5, 0.6, 1.0), index);
 }
