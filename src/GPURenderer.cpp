@@ -2,10 +2,13 @@
 // Created by Shahmeer Athar on 2022-01-31.
 //
 
-#include "GPURenderer.h"
-
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
+
+#include "GPURenderer.h"
+
+#include <iostream>
+#include <fstream>
 
 #include <Foundation/Foundation.hpp>
 #include <Metal/Metal.hpp>
@@ -58,11 +61,11 @@ void GPURenderer::render()
 
     // Set up texture for our ray tracing shader
     MTL::TextureDescriptor *textureDescriptor = MTL::TextureDescriptor::alloc()->init();
-    textureDescriptor->setPixelFormat(MTL::PixelFormatRGBA8Unorm);
+    textureDescriptor->setPixelFormat(MTL::PixelFormatRGBA32Float);
     textureDescriptor->setWidth(m_ImageProperties.imgWidth);
     textureDescriptor->setHeight(m_ImageProperties.imgHeight);
     textureDescriptor->setUsage(MTL::TextureUsageShaderWrite);
-    textureDescriptor->setStorageMode(MTL::StorageModePrivate);
+    textureDescriptor->setStorageMode(MTL::StorageModeShared);
     MTL::Texture *texture = mtlDevice->newTexture(textureDescriptor);
     encoder->setTexture(texture, 0);
 
@@ -71,6 +74,35 @@ void GPURenderer::render()
     encoder->endEncoding();
     commandBuffer->commit();
     commandBuffer->waitUntilCompleted();
+
+    // Output to image
+    cout << "Shader has completed render pass! Outputting image now" << endl;
+    int stride = m_ImageProperties.imgWidth * 4 * 4;
+    int numBytes = stride * m_ImageProperties.imgHeight;
+    auto textureData = (float *)malloc(numBytes);
+    MTL::Region mtlRegion = MTL::Region::Make2D(0, 0, m_ImageProperties.imgWidth, m_ImageProperties.imgHeight);
+    texture->getBytes(textureData, stride, numBytes, mtlRegion, 0, 0);
+    cout << textureData << endl;
+
+    ofstream image("../renders/image.ppm");
+    if (!image.is_open())
+    {
+        cout << "Couldn't open image to write to. All that work for nothing..." << endl;
+        return;
+    }
+    image << "P3\n" << m_ImageProperties.imgWidth << ' ' << m_ImageProperties.imgHeight << "\n255\n";
+    for (int i = 0; i < numBytes; i+=4)
+    {
+        cout << i << endl;
+        int red = static_cast<int>(textureData[i] * 255);
+        int green = static_cast<int>(textureData[i + 1] * 255);
+        int blue = static_cast<int>(textureData[i + 2] * 255);
+        int alpha = static_cast<int>(textureData[i + 3] * 255);
+
+        // cout << red << ' ' << green << ' ' << blue << ' '  << alpha << endl;
+        image << red << ' ' << green << ' ' << blue << endl;
+    }
+    free(textureData);
 
     // Release objects
     metalLibFilePath->release();
