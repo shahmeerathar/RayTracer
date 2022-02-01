@@ -12,7 +12,6 @@ OBJS = $(patsubst %,$(BUILDDIR)/%,$(_OBJS))
 SHADER = GPURayTracer
 SHADERSRC = $(patsubst %,$(SRCDIR)/%,$(SHADER)).metal
 SHADERLIB = $(patsubst %,$(LIBDIR)/%,$(SHADER)).metallib
-SHADERH = $(patsubst %,$(SRCDIR)/%,$(SHADER)).h
 
 METALPATH = lib/metal-cpp
 LIBS = -framework Foundation -framework Metal -framework QuartzCore
@@ -25,7 +24,6 @@ all: $(BUILDDIR) $(OUTDIR) $(LIBDIR) raytracer
 metal:
 	xcrun -sdk macosx metal -c $(SHADERSRC) -o $(BUILDDIR)/$(SHADER).air
 	xcrun -sdk macosx metallib $(BUILDDIR)/$(SHADER).air -o $(SHADERLIB)
-	xxd -i $(SHADERLIB) > $(SHADERH)
 
 $(BUILDDIR):
 	mkdir $@
@@ -47,4 +45,3 @@ clean:
 	rm -rf $(OUTDIR)
 	rm -rf renders/image.ppm
 	rm -rf $(LIBDIR)/*.metallib
-	rm -rf $(SHADERH)
