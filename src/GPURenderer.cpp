@@ -20,13 +20,13 @@ void GPURenderer::render()
 
     NS::Error **nsError;
     MTL::CommandQueue *commandQueue = mtlDevice->newCommandQueue();
-    auto libraryData = dispatch_data_create(&lib_GPURayTracer_metallib[0], lib_GPURayTracer_metallib_len, dispatch_get_current_queue(), ^{});
+    auto libraryData = dispatch_data_create(&lib_GPURayTracer_metallib[0], lib_GPURayTracer_metallib_len,
+                                            dispatch_get_current_queue(), ^
+                                            {});
     MTL::Library *mtlLibrary = mtlDevice->newLibrary(libraryData, nsError);
     NS::String *kernelFunctionName = NS::String::string("rayTrace", NS::ASCIIStringEncoding);
     MTL::Function *rayTracingFunction = mtlLibrary->newFunction(kernelFunctionName);
     MTL::ComputePipelineState *rtPipelineState = mtlDevice->newComputePipelineState(rayTracingFunction, nsError);
-
-    cout << rayTracingFunction->name();
 
     int threadsPerGroupWidth = rtPipelineState->threadExecutionWidth();
     int threadsPerGroupHeight = rtPipelineState->maxTotalThreadsPerThreadgroup() / threadsPerGroupWidth;
