@@ -76,7 +76,11 @@ void GPURenderer::render()
     textureDescriptor->setUsage(MTL::TextureUsageShaderWrite);
     textureDescriptor->setStorageMode(MTL::StorageModeShared);
     MTL::Texture *texture = mtlDevice->newTexture(textureDescriptor);
+
+    // Encode parameters into kernel
     encoder->setTexture(texture, 0);
+    encoder->setBytes(&m_ImageProperties.imgWidth, sizeof(int), 0);
+    encoder->setBytes(&m_ImageProperties.imgHeight, sizeof(int), 1);
 
     // Dispatch kernel
     encoder->dispatchThreads(threadsPerGrid, threadsPerGroup);
