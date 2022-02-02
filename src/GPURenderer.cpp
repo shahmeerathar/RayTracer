@@ -81,6 +81,7 @@ void GPURenderer::render()
     encoder->setTexture(texture, 0);
     encoder->setBytes(&m_ImageProperties.imgWidth, sizeof(int), 0);
     encoder->setBytes(&m_ImageProperties.imgHeight, sizeof(int), 1);
+    encoder->setBytes(&m_ImageProperties.samplesPerPixel, sizeof(int), 2);
 
     // Dispatch kernel
     encoder->dispatchThreads(threadsPerGrid, threadsPerGroup);
