@@ -1,3 +1,6 @@
+// Comment out or remove the following line to use GPU on supported Macs
+// #define FORCE_CPU_RENDER
+
 #include "Commons.h"
 #include "Camera.h"
 #include "Sphere.h"
@@ -69,7 +72,7 @@ int main()
                                                  imageProperties.aspectRatio);
     imageProperties.samplesPerPixel = 100;
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(FORCE_CPU_RENDER)
     GPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
 #else
     CPURenderer renderer(imageProperties, getCamera(imageProperties.aspectRatio), getScene());
