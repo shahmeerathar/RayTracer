@@ -25,6 +25,7 @@ public:
                                                                                    m_Camera(camera),
                                                                                    m_Scene(scene)
     {}
+
     Colour colourRay(const Ray &r, const Hittable &object, int depth);
     virtual void render() = 0;
 

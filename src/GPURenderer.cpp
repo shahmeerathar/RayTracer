@@ -85,10 +85,10 @@ void GPURenderer::render()
     commandBuffer->waitUntilCompleted();
 
     // Output to image
-    cout << "Shader has completed render pass! Outputting image now" << endl;
+    cout << "Shader has completed render pass! Writing image now" << endl;
     int bytesPerRow = m_ImageProperties.imgWidth * pixelProperties.bytesPerPixel;
     int numBytes = bytesPerRow * m_ImageProperties.imgHeight;
-    auto textureData = (float *)malloc(numBytes);
+    auto textureData = (float *) malloc(numBytes);
     MTL::Region mtlRegion = MTL::Region::Make2D(0, 0, m_ImageProperties.imgWidth, m_ImageProperties.imgHeight);
     texture->getBytes(textureData, bytesPerRow, numBytes, mtlRegion, 0, 0);
 
@@ -99,7 +99,7 @@ void GPURenderer::render()
         return;
     }
     image << "P3\n" << m_ImageProperties.imgWidth << ' ' << m_ImageProperties.imgHeight << "\n255\n";
-    for (int i = 0; i < numBytes / pixelProperties.componentsPerPixel; i+=4)
+    for (int i = 0; i < numBytes / pixelProperties.componentsPerPixel; i += 4)
     {
         int red = static_cast<int>(textureData[i] * 255);
         int green = static_cast<int>(textureData[i + 1] * 255);
