@@ -16,6 +16,7 @@ public:
             : Renderer(imageProperties, camera, scene)
     {}
 
+    Colour colourRay(const Ray &r, const Hittable &object, int depth);
     void render() override;
 };
 

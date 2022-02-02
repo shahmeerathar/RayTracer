@@ -26,7 +26,6 @@ public:
                                                                                    m_Scene(scene)
     {}
 
-    Colour colourRay(const Ray &r, const Hittable &object, int depth);
     virtual void render() = 0;
 
 protected:

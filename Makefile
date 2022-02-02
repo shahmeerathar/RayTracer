@@ -4,9 +4,9 @@ OUTDIR = bin
 LIBDIR = lib
 OUT = $(OUTDIR)/RayTracer
 
-_SRCS = main.cpp Camera.cpp HittableList.cpp Materials.cpp Ray.cpp Sphere.cpp Vec3.cpp Renderer.cpp CPURenderer.cpp GPURenderer.cpp
+_SRCS = main.cpp Camera.cpp HittableList.cpp Materials.cpp Ray.cpp Sphere.cpp Vec3.cpp CPURenderer.cpp GPURenderer.cpp
 SRCS = $(patsubst %,$(SRCDIR)/%,$(_SRCS))
-_OBJS = main.o Camera.o HittableList.o Materials.o Ray.o Sphere.o Vec3.o Renderer.o CPURenderer.o GPURenderer.o
+_OBJS = main.o Camera.o HittableList.o Materials.o Ray.o Sphere.o Vec3.o CPURenderer.o GPURenderer.o
 OBJS = $(patsubst %,$(BUILDDIR)/%,$(_OBJS))
 
 SHADER = GPURayTracer
